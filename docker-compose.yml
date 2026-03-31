@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # Service MongoDB
+  mongodb:
+    image: mongo:6
+    container_name: pdf-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - pdf-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Service Redis
+  redis:
+    image: redis:7-alpine
+    container_name: pdf-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - pdf-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API Service
+  api:
+    build: 
+      context: .
+      dockerfile: DockerFile
+    container_name: pdf-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017/pdf-generator?authSource=admin
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=development
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./dist:/app/dist
+    networks:
+      - pdf-network
+    command: npm run dev
+
+  # Worker Service
+  worker:
+    build: 
+      context: .
+      dockerfile: DockerFile
+    container_name: pdf-worker
+    restart: unless-stopped
+    environment:
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017/pdf-generator?authSource=admin
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=development
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./dist:/app/dist
+    networks:
+      - pdf-network
+    command: npm run worker
+
+networks:
+  pdf-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:

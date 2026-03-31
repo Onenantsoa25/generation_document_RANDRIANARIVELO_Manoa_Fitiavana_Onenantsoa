@@ -1,0 +1,24 @@
+# Image Node.js officielle
+FROM node:18-alpine
+
+# Creer le dossier de l'application
+WORKDIR /app
+
+# Copier les fichiers de dependances
+COPY package*.json ./
+COPY tsconfig.json ./
+
+# Installer les dependances
+RUN npm install
+
+# Copier le code source
+COPY src ./src
+
+# Compiler TypeScript
+RUN npm run build
+
+# Exposer le port
+EXPOSE 3000
+
+# Commande par defaut (sera surchargee pour le worker)
+CMD ["npm", "start"]
