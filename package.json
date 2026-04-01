@@ -17,7 +17,12 @@
     "mongoose": "^7.5.0",
     "morgan": "^1.10.0",
     "pdfkit": "^0.14.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "axios": "^1.6.0",
+    "prom-client": "^15.1.0",
+    "winston": "^3.11.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "@types/bull": "^4.10.0",
@@ -27,6 +32,10 @@
     "@types/node": "^20.8.0",
     "@types/pdfkit": "^0.13.3",
     "@types/uuid": "^9.0.5",
+    "@types/handlebars": "^4.1.0",
+    "@types/winston": "^2.4.4",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.6",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
