@@ -96,9 +96,9 @@ async function gracefulShutdown(signal: string) {
 
 
 const server = app.listen(PORT, () => {
-  console.log(`API demarree sur http://localhost:${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/health`);
-  console.log(`Documentation: http://localhost:${PORT}/`);
+  console.log(`API demarree sur http://10.21.34.207:${PORT}`);
+  console.log(`Health check: http://10.21.34.207:${PORT}/health`);
+  console.log(`Documentation: http://10.21.34.207:${PORT}/`);
 });
 
 process.on('SIGTERM', () => {
