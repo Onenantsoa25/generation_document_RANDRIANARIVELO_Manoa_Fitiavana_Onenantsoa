@@ -6,12 +6,11 @@ export const connectDB = async () => {
     await mongoose.connect(mongoUri);
     console.log(' MongoDB connected successfully');
   } catch (error) {
-    console.error('❌ MongoDB connection error:', error);
+    console.error(' MongoDB connection error:', error);
     process.exit(1);
   }
 };
 
-// Configurer GridFS
 let gridFSBucket: any;
 export const getGridFSBucket = () => {
   if (!gridFSBucket && mongoose.connection.db) {

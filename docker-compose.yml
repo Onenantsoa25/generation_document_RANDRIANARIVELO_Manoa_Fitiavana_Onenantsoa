@@ -58,6 +58,9 @@ services:
     volumes:
       - ./src:/app/src
       - ./dist:/app/dist
+      - ./scripts:/app/src/scripts 
+      - ./logs:/app/logs
+      # - ./benchmark-reports:/app/benchmark-reports 
     networks:
       - pdf-network
     command: npm run dev
@@ -81,9 +84,36 @@ services:
     volumes:
       - ./src:/app/src
       - ./dist:/app/dist
+      - ./logs:/app/logs 
     networks:
       - pdf-network
     command: npm run worker
+
+  # benchmark:
+  #   build: 
+  #     context: .
+  #     dockerfile: DockerFile
+  #   container_name: pdf-benchmark
+  #   environment:
+  #     - API_URL=http://api:3000
+  #     - MONGODB_URI=mongodb://admin:password@mongodb:27017/pdf-generator?authSource=admin
+  #     - REDIS_URL=redis://redis:6379
+  #     - NODE_ENV=development
+  #   depends_on:
+  #     mongodb:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     api:
+  #       condition: service_started
+  #   volumes:
+  #     - ./src:/app/src           
+  #     - ./dist:/app/dist
+  #     - ./benchmark-reports:/app/benchmark-reports
+  #   networks:
+  #     - pdf-network
+  #   working_dir: /app
+  #   command: sh -c "npm install -g ts-node typescript && npm install axios && npx ts-node /app/src/scripts/benchmark.ts 1000"
 
 networks:
   pdf-network:
